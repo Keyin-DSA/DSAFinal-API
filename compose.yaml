@@ -1,5 +1,5 @@
 services:
-  myapp-main:
+  api:
     build: .
     container_name: binarytree-api
     ports:
