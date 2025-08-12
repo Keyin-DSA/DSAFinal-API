@@ -1,0 +1,27 @@
+name: Feature Request
+description: Suggest a new feature or enhancement
+title: "[FEATURE]: "
+labels: ["enhancement"]
+assignees: []
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Feature Description
+      description: What you want to add or improve.
+      placeholder: "Add a /balanced endpoint..."
+    validations:
+      required: true
+  - type: textarea
+    id: motivation
+    attributes:
+      label: Motivation
+      description: Why is this feature needed? What problem does it solve?
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance Criteria
+      description: Define when this feature will be considered complete.
+      placeholder: "- API returns balanced tree\n- JSON format unchanged..."
