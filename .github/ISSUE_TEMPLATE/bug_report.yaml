@@ -1,0 +1,33 @@
+name: Bug Report
+description: Report a bug in the BST API or UI
+title: "[BUG]: "
+labels: ["bug"]
+assignees: []
+body:
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to Reproduce
+      description: Describe exactly what you did so we can reproduce the issue.
+      placeholder: "1. POST /api/trees with X\n2. Click Y..."
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What should have happened?
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual Behavior
+      description: What actually happened?
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs / Screenshots
+      description: Add relevant logs, stack traces, or screenshots.
