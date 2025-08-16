@@ -23,6 +23,3 @@ jobs:
 
       - name: Build with Maven
         run: mvn clean install --batch-mode
-
-      - name: Build Docker image
-        run: docker build -t binarytree-api:ci .
