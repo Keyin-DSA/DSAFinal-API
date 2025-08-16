@@ -53,10 +53,38 @@ public class BinarySearchTree {
     }
 
     public void remove(int data){
-
+        if(search(data)){
+            removeHelper(root, data);
+            System.out.println("Node removed");
+        }
+        else {
+            System.out.println("Node not found");
+        }
     }
     private Node removeHelper(Node root, int data){
-        return null;
+        if(root == null){
+            return root;
+        }
+        else if(data < root.data){
+            root.left = removeHelper(root.left, data);
+        }
+        else if(data > root.data){
+            root.right = removeHelper(root.right, data);
+        }
+        else {
+            if(root.left == null && root.right == null){
+                root = null;
+            }
+            else if(root.right != null){
+                root.data = successor(root);
+                root.right = removeHelper(root.right, root.data);
+            }
+            else {
+                root.data = predecessor(root);
+                root.left = removeHelper(root.left, root.data);
+            }
+        }
+        return root;
     }
     private int successor(Node root){
         return 0;
