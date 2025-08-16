@@ -65,4 +65,3 @@ It exposes endpoints for creating new trees and retrieving previously saved tree
 ## License
 
 MIT License.
-
