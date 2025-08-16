@@ -69,7 +69,6 @@ class TreeServiceTest {
         assertFalse((Boolean) result.get("found"));
         @SuppressWarnings("unchecked")
         List<Integer> path = (List<Integer>) result.get("path");
-        // Traversal will show the route taken to decide it's missing
         assertFalse(path.isEmpty());
     }
 }
