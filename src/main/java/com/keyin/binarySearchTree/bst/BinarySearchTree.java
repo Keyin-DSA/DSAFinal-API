@@ -1,4 +1,4 @@
-package com.keyin.binarySearchTree.brocode;
+package com.keyin.binarySearchTree.bst;
 
 public class BinarySearchTree {
 
