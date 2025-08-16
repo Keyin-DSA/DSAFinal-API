@@ -34,19 +34,16 @@ public class TreeService {
         String numbersJson = toJson(numbers);
         String treeJson = toJson(serializeNode(bst.root));
 
-        // Persist snapshot
         TreeModel rec = new TreeModel();
         rec.setNumbersJson(numbersJson);
         rec.setTreeJson(treeJson);
         return repo.save(rec);
     }
 
-    // List all saved trees, newest first
     public List<TreeModel> getAllSaved() {
         return repo.findAllByOrderByCreatedAtDesc();
     }
 
-    // Optional: fetch one by id
     public TreeModel getById(Long id) {
         return repo.findById(id).orElse(null);
     }
