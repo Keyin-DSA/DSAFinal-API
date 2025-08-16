@@ -1,64 +1,71 @@
 package com.keyin.binarySearchTree.bst;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class TreeService {
 
+    private final TreeRepo repo;
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private final BinarySearchTree bst = new BinarySearchTree();
 
+    public TreeService(TreeRepo repo) {
+        this.repo = repo;
+    }
 
-    public String createTree(List<Integer> numbers) throws Exception {
+    // Build BST from posted numbers, save, and return the saved record
+    public TreeModel createAndSave(List<Integer> numbers) {
+        if (numbers == null || numbers.isEmpty()) {
+            throw new IllegalArgumentException("numbers must contain at least one integer");
+        }
+
+        // Build in-memory BST
+        BinarySearchTree bst = new BinarySearchTree();
         for (int n : numbers) {
             bst.insert(new Node(n));
         }
-        return serializeTree();
+
+        // Serialize original numbers and the tree structure
+        String numbersJson = toJson(numbers);
+        String treeJson = toJson(serializeNode(bst.root));
+
+        // Persist snapshot
+        TreeModel rec = new TreeModel();
+        rec.setNumbersJson(numbersJson);
+        rec.setTreeJson(treeJson);
+        return repo.save(rec);
     }
 
-    public String addNode(int value) throws Exception {
-        bst.insert(new Node(value));
-        return serializeTree();
+    // List all saved trees, newest first
+    public List<TreeModel> getAllSaved() {
+        return repo.findAllByOrderByCreatedAtDesc();
     }
 
-    public String deleteNode(int value) throws Exception {
-        bst.remove(value);
-        return serializeTree();
+    // Optional: fetch one by id
+    public TreeModel getById(Long id) {
+        return repo.findById(id).orElse(null);
     }
 
-    public Map<String, Object> searchNode(int value) {
-        List<Integer> path = new ArrayList<>();
-        boolean found = searchWithPath(bst.root, value, path);
-
-        Map<String, Object> result = new HashMap<>();
-        result.put("found", found);
-        result.put("path", path);
-        return result;
-    }
-
-    // --- helpers ---
-
-    private boolean searchWithPath(Node root, int value, List<Integer> path) {
-        if (root == null) return false;
-        path.add(root.data);
-        if (root.data == value) return true;
-        if (value < root.data) return searchWithPath(root.left, value, path);
-        else return searchWithPath(root.right, value, path);
-    }
-
-    private String serializeTree() throws Exception {
-        return objectMapper.writeValueAsString(serializeNode(bst.root));
-    }
-
+    // ---- helpers ----
     private Map<String, Object> serializeNode(Node node) {
         if (node == null) return null;
-        Map<String, Object> map = new LinkedHashMap<>();
-        map.put("value", node.data);
-        map.put("left", serializeNode(node.left));
-        map.put("right", serializeNode(node.right));
-        return map;
+        Map<String, Object> m = new LinkedHashMap<>();
+        m.put("value", node.data);
+        m.put("left", serializeNode(node.left));
+        m.put("right", serializeNode(node.right));
+        return m;
+    }
+
+    private String toJson(Object v) {
+        try {
+            return objectMapper.writeValueAsString(v);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("Failed to serialize tree", e);
+        }
     }
 }

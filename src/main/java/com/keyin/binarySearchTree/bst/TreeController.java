@@ -1,42 +1,37 @@
 package com.keyin.binarySearchTree.bst;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
-@RequestMapping("/api/trees")
-@CrossOrigin
+@CrossOrigin // tighten to your frontend origin when you deploy
 public class TreeController {
 
-    private final TreeService treeService;
+    private final TreeService service;
 
-    public TreeController(TreeService treeService) {
-        this.treeService = treeService;
+    public TreeController(TreeService service) {
+        this.service = service;
     }
-
-    // Build a new BST from a list of numbers
-    @PostMapping
-    public String createTree(@RequestBody List<Integer> numbers) throws Exception {
-        return treeService.createTree(numbers);
+    
+    // POST /process-numbers  body: [7,3,9,1,5]
+    @PostMapping("/process-numbers")
+    public ResponseEntity<TreeModel> processNumbers(@RequestBody List<Integer> numbers) {
+        TreeModel saved = service.createAndSave(numbers);
+        return ResponseEntity.status(201).body(saved);
     }
-
-    // Add a new node
-    @PostMapping("/add/{value}")
-    public String addNode(@PathVariable int value) throws Exception {
-        return treeService.addNode(value);
+    
+    // GET /previous-trees
+    @GetMapping("/previous-trees")
+    public List<TreeModel> previousTrees() {
+        return service.getAllSaved();
     }
-
-    // Delete a node
-    @DeleteMapping("/delete/{value}")
-    public String deleteNode(@PathVariable int value) throws Exception {
-        return treeService.deleteNode(value);
-    }
-
-    // Search for a node, return path traversed
-    @GetMapping("/search/{value}")
-    public Map<String, Object> searchNode(@PathVariable int value) {
-        return treeService.searchNode(value);
+    
+    // GET /trees/{id}
+    @GetMapping("/trees/{id}")
+    public ResponseEntity<TreeModel> getTree(@PathVariable Long id) {
+        TreeModel rec = service.getById(id);
+        return rec == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(rec);
     }
 }
